@@ -15,14 +15,14 @@ module.exports = {
                 country_id serial primary key, 
                 name varchar
             );
-
+            
             create table cities (
                 city_id serial primary key,
                 name varchar,
                 rating integer,
                 country_id integer references countries(country_id)
             );
-
+            
             insert into countries (name)
             values ('Afghanistan'),
             ('Albania'),
@@ -234,13 +234,14 @@ module.exports = {
     createCity: (req, res) => {
         let { name, rating, countryId } = req.body;
         sequelize.query(`INSERT INTO cities (name, rating, country_id)
-        VALUES (${name}, ${rating}, ${countryId})`)
+        VALUES ('${name}', ${rating}, ${countryId})`)
         .then(dbRes => res.status(200).send(dbRes[0]))
         .catch(err => console.log(err));
     },
 
     getCities: (req, res) => {
-        sequelize.query(`SELECT cities.city_id, cities.name AS city, cities.rating, countries.country_id, countries.name AS country
+        sequelize.query(`
+        SELECT cities.city_id, cities.name AS city, cities.rating, countries.country_id, countries.name AS country
         FROM cities
         JOIN countries ON countries.country_id = cities.city_id`)
         .then(dbRes => res.status(200).send(dbRes[0]))
